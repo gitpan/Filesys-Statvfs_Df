@@ -11,13 +11,16 @@ Revision history for Perl extension Filesys::Statvfs Filesys::Df
 	- Added inode values to df().
 	- Updated documentation
 
-0.44 Thu Aug 04 1998
+0.44 Tue Aug 04 1998
 	- Changed keys to lowercase for df().
 	- Removed user_used key from documentation although
 	  it is still acessable.
 	- Updated documnetation.
 
-0.46 Thu Aug 07 1998
+0.46 Fri Aug 07 1998
 	- Changed module layout. No more Filesys dir.
 	  This fixed a bug with installs.
 	- Changed documentation.
+
+0.47 Sat Aug 08 1998
+	- README Changes
