@@ -32,8 +32,21 @@ Revision history for Perl extension Filesys::Statvfs Filesys::Df
 	- Changed Makefile.PL so that it will
           create a config.h
 	
-	-Changed Statvfs.xs to return extra values 
+	- Changed Statvfs.xs to return extra values 
 	 if defined by the OS.
 
 0.52 Wed Nov 04 1998
-	-Shortened the code in Df.pm 
+	- Shortened the code in Df.pm 
+
+0.53 Thu Dec 31 1998
+	- Fixed df() bug where percents over 100 would
+	  not have the proper value.
+
+	- Fixed df() bug where a bavail value would
+	  have a bad value if percent was over 100.
+
+	- Used int() to lose any decimals.
+
+0.54 Mon Mar 1 1999
+	- README Changes
+	- test.pl changes

@@ -18,14 +18,15 @@ print "ok 1\n";
 
 my $dir='/';
 my @result=Filesys::Statvfs::statvfs($dir);
-(! defined @result) &&
-	(die"not ok 2\nstatvfs\(\) call failed for \"$dir\" $!\n") ||
-	(print"ok 2\n");
+
+defined(@result) and
+	print"ok 2\n" or
+	die "not ok 2\nstatvfs\(\) call failed for \"$dir\" $!\n";
 
 my $a_ref=df($dir);
-(! defined($a_ref)) &&
-	(die"not ok 3\ndf\(\) call failed: $!\n") ||
-	(print"ok 3\n");
+defined($a_ref) and
+	print"ok 3\n" or
+	die"not ok 3\ndf\(\) call failed: $!\n";
 
 print"All tests successful!\n\n";
 print"statvfs() call was successful. Results for directory: \"$dir\"\n";

@@ -8,7 +8,7 @@ require DynaLoader;
 
 @ISA = qw(Exporter DynaLoader);
 @EXPORT = qw(statvfs);
-$VERSION = '0.52';
+$VERSION = '0.54';
 bootstrap Filesys::Statvfs $VERSION;
 
 1;
@@ -47,6 +47,8 @@ the statvfs() man page.
 
 Note:
 On Digital Unix $fstr will be NULL.
+
+$size and $time are only returned on HP-UX systems.
 
 =head1 AUTHOR
 

@@ -10,7 +10,7 @@ require Exporter;
 
 @ISA = qw(Exporter);
 @EXPORT = qw(df);
-$VERSION = '0.52';
+$VERSION = '0.54';
 
 sub df {
 my ($dir, $block_size)=@_;
@@ -39,6 +39,9 @@ my %fs;
                 $result=$block_size/$frsize;
                 $fs{blocks}/=$result;
                 $fs{bfree}/=$result;
+		####Keep bavail -
+		($fs{bavail} < 0) &&
+			($result*=-1);
                 $fs{bavail}/=$result;
         }
 
@@ -46,6 +49,9 @@ my %fs;
                 $result=$frsize/$block_size;
                 $fs{blocks}*=$result;
                 $fs{bfree}*=$result;
+		####Keep bavail -
+		($fs{bavail} < 0) &&
+			($result*=-1);
                 $fs{bavail}*=$result;
         }
 
@@ -54,10 +60,15 @@ my %fs;
         if($fs{bfree} != $fs{bavail}) {
                 $fs{user_blocks}=$fs{blocks}-($fs{bfree}-$fs{bavail});
                 $fs{user_used}=$fs{user_blocks}-$fs{bavail};
-		($fs{bavail} >= 0) &&
-                	($fs{per}=$fs{user_used}/$fs{user_blocks}) ||
-			($fs{per}=($fs{bavail}*=-1)/$fs{user_blocks});
+		if($fs{bavail} < 0) {
 			#### over 100%
+			my $tmp_bavail=$fs{bavail};
+			$fs{per}=($tmp_bavail*=-1)/$fs{user_blocks};
+		}
+	
+		else {
+                	$fs{per}=$fs{user_used}/$fs{user_blocks};
+		}
         }
 	
 	####su and user amount are the same
@@ -72,10 +83,10 @@ my %fs;
         $fs{per}+=.5;
 
 	#### over 100%
-	($fs{bfree} != $fs{bavail} && $fs{bavail} < 0) &&
+	($fs{bavail} < 0) &&
 		($fs{per}+=100);
 
-        $fs{per}=~s/^(\d+).+$/$1/;
+        $fs{per}=int($fs{per});
 
 	#### Inodes
         $fs{fused}=$fs{files}-$fs{ffree};
@@ -85,10 +96,15 @@ my %fs;
         	if($fs{ffree} != $fs{favail}) {
                 	$fs{user_files}=$fs{files}-($fs{ffree}-$fs{favail});
                 	$fs{user_fused}=$fs{user_files}-$fs{favail};
-			($fs{favail} >= 0) &&
-               			($fs{fper}=$fs{user_fused}/$fs{user_files}) ||
-                		($fs{fper}=($fs{favail}*=-1)/$fs{user_files});
+			if($fs{favail} < 0)  {
 				#### over 100%
+				my $tmp_favail=$fs{favail};
+                		$fs{fper}=($tmp_favail*=-1)/$fs{user_files};
+			}
+
+			else {
+               			$fs{fper}=$fs{user_fused}/$fs{user_files};
+			}
 		}
 
         	####su and user amount are the same
@@ -103,18 +119,19 @@ my %fs;
         	$fs{fper}+=.5;
 
 		#### over 100%
-		($fs{ffree} != $fs{favail} && $fs{favail} < 0) &&
+		($fs{favail} < 0) &&
 			($fs{fper}+=100);
         }
 
 	####Probably an NFS mount no inode info
 	else {
+		$fs{fper}=-1;
 		$fs{fused}=-1;
 		$fs{user_fused}=-1;
 		$fs{user_files}=-1;
 	}
 
-        $fs{fper}=~s/^(\d+).+$/$1/;
+        $fs{fper}=int($fs{fper});
         return(\%fs);
 }
 
