@@ -79,3 +79,8 @@ Solaris 2.6, and some Digital Unix.
 If you have any problems or questions please email
 me at IGuthrie@aol.com with "Filesys Module" in
 the subject line.
+
+
+Copyright (c) 1998 Ian Guthrie. All rights reserved.
+               This program is free software; you can redistribute it and/or
+               modify it under the same terms as Perl itself.

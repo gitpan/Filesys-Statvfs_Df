@@ -22,5 +22,8 @@ Revision history for Perl extension Filesys::Statvfs Filesys::Df
 	  This fixed a bug with installs.
 	- Changed documentation.
 
-0.47 Sat Aug 08 1998
+0.48 Sat Aug 08 1998
+	- README Changes
+
+0.49 Sat Sep 15 1998
 	- README Changes

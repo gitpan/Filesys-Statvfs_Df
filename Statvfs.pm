@@ -8,7 +8,7 @@ require DynaLoader;
 
 @ISA = qw(Exporter DynaLoader);
 @EXPORT = qw(statvfs);
-$VERSION = '0.47';
+$VERSION = '0.49';
 bootstrap Filesys::Statvfs $VERSION;
 
 1;
@@ -45,6 +45,10 @@ On Digital Unix $fstr maybe NULL.
 
 Ian Guthrie
 IGuthrie@aol.com
+
+Copyright (c) 1998 Ian Guthrie. All rights reserved.
+               This program is free software; you can redistribute it and/or
+               modify it under the same terms as Perl itself.
 
 =head1 SEE ALSO
 

@@ -10,7 +10,7 @@ require Exporter;
 
 @ISA = qw(Exporter);
 @EXPORT = qw(df);
-$VERSION = '0.47';
+$VERSION = '0.49';
 
 sub df {
 my ($dir, $block_size)=@_;
@@ -271,6 +271,10 @@ seems to round a bit different than 'df' does but I like
 
 Ian Guthrie
 IGuthrie@aol.com
+
+Copyright (c) 1998 Ian Guthrie. All rights reserved.
+               This program is free software; you can redistribute it and/or
+               modify it under the same terms as Perl itself.
 
 =head1 SEE ALSO
 
