@@ -51,5 +51,5 @@ Revision history for Perl extension Filesys::Statvfs Filesys::Df
 	- README Changes
 	- test.pl changes
 
-0.57 Sun Nov 28 1999
+0.55 Sun Nov 28 1999
 	- Added support for Linux

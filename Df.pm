@@ -10,7 +10,7 @@ require Exporter;
 
 @ISA = qw(Exporter);
 @EXPORT = qw(df);
-$VERSION = '0.57';
+$VERSION = '0.60';
 
 sub df {
 my ($dir, $block_size) = @_;
@@ -35,24 +35,28 @@ my %fs;
 			(return());
 
 	####Return info in 1k blocks or specified size
-	if($block_size > $frsize) {
-		$result = $block_size / $frsize;
-		$fs{blocks} /= $result;
-		$fs{bfree} /= $result;
-		####Keep bavail -
-		($fs{bavail} < 0) &&
-			($result *= -1);
-		$fs{bavail} /= $result;
-	}
 
-	elsif($block_size < $frsize) {
-		$result = $frsize / $block_size;
-		$fs{blocks} *= $result;
-		$fs{bfree} *= $result;
-		####Keep bavail -
-		($fs{bavail} < 0) &&
-			($result *= -1);
-		$fs{bavail} *= $result;
+	## Added for GNU lib bug 
+	if($frsize != 0) {
+		if($block_size > $frsize) {
+			$result = $block_size / $frsize;
+			$fs{blocks} /= $result;
+			$fs{bfree} /= $result;
+			####Keep bavail -
+			($fs{bavail} < 0) &&
+				($result *= -1);
+			$fs{bavail} /= $result;
+		}
+
+		elsif($block_size < $frsize) {
+			$result = $frsize / $block_size;
+			$fs{blocks} *= $result;
+			$fs{bfree} *= $result;
+			####Keep bavail -
+			($fs{bavail} < 0) &&
+				($result *= -1);
+			$fs{bavail} *= $result;
+		}
 	}
 
 	$fs{used} = $fs{blocks} - $fs{bfree};
