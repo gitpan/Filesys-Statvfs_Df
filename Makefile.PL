@@ -9,6 +9,9 @@ open(CONFIG, ">config.h") or die "$! config.h";
 ($Config{osname} eq "dec_osf") &&
         (print CONFIG "#define _DEC__\n");
 
+($Config{osname} eq "linux") &&
+        (print CONFIG "#define _LINUX__\n");
+
 close(CONFIG);
 
 WriteMakefile(

@@ -8,7 +8,7 @@ require DynaLoader;
 
 @ISA = qw(Exporter DynaLoader);
 @EXPORT = qw(statvfs);
-$VERSION = '0.58';
+$VERSION = '0.57';
 bootstrap Filesys::Statvfs $VERSION;
 
 1;
@@ -22,15 +22,15 @@ Filesys::Statvfs - Perl extension for statvfs().
 
   use Filesys::Statvfs;
 
-     my($bsize, $frsize, $blocks, $bfree, $bavail, $files,
-        $ffree, $favail, $fsid, $basetype, $flag, $namemax,
-        $fstr) = statvfs("/tmp");
+	my($bsize, $frsize, $blocks, $bfree, $bavail,
+	$files, $ffree, $favail, $fsid, $basetype, $flag,
+	$namemax, $fstr)=statvfs("/tmp");
 
 	##### On HP-UX 10x systems f_time and f_size are avaliable
 
-       ($bsize, $frsize, $blocks, $bfree, $bavail,
+	($bsize, $frsize, $blocks, $bfree, $bavail,
 	$files, $ffree, $favail, $fsid, $basetype, $flag,
-	$namemax, $fstr, $size, $time) = statvfs("/tmp");
+	$namemax, $fstr, $size, $time)=statvfs("/tmp");
 
 
 
@@ -39,8 +39,8 @@ Filesys::Statvfs - Perl extension for statvfs().
 Interface for statvfs();
 
 The statvfs() function will return a list
-of values or will return undef and set $!
-if there was an error.
+of values or will return undef and 
+set $! if there was an error.
 
 The values returned are described in the statvfs header or
 the statvfs() man page.

@@ -10,7 +10,7 @@ require Exporter;
 
 @ISA = qw(Exporter);
 @EXPORT = qw(df);
-$VERSION = '0.58';
+$VERSION = '0.57';
 
 sub df {
 my ($dir, $block_size) = @_;
@@ -27,115 +27,112 @@ my %fs;
 	($block_size) ||
 		($block_size = 1024);
 
-       ($bsize, $frsize,
-        $fs{blocks}, $fs{bfree},
-        $fs{bavail}, $fs{files},
-        $fs{ffree},  $fs{favail}) = statvfs($dir);
+	($bsize, $frsize, $fs{blocks}, $fs{bfree},
+	 $fs{bavail}, $fs{files}, $fs{ffree},
+	 $fs{favail})=statvfs($dir);
 
-	( defined($fs{blocks}) ) ||
-			( return() );
+	(defined($fs{blocks})) ||
+			(return());
 
-	#### Return info in 1k blocks or specified size
-        if($block_size > $frsize) {
-                $result = $block_size / $frsize;
-                $fs{blocks} /= $result;
-                $fs{bfree} /= $result;
-		#### Keep bavail -
+	####Return info in 1k blocks or specified size
+	if($block_size > $frsize) {
+		$result = $block_size / $frsize;
+		$fs{blocks} /= $result;
+		$fs{bfree} /= $result;
+		####Keep bavail -
 		($fs{bavail} < 0) &&
 			($result *= -1);
-                $fs{bavail} /= $result;
-        }
+		$fs{bavail} /= $result;
+	}
 
-        elsif($block_size < $frsize) {
-                $result = $frsize / $block_size;
-                $fs{blocks} *= $result;
-                $fs{bfree} *= $result;
-		#### Keep bavail -
+	elsif($block_size < $frsize) {
+		$result = $frsize / $block_size;
+		$fs{blocks} *= $result;
+		$fs{bfree} *= $result;
+		####Keep bavail -
 		($fs{bavail} < 0) &&
 			($result *= -1);
-                $fs{bavail} *= $result;
-        }
+		$fs{bavail} *= $result;
+	}
 
-        $fs{used} = $fs{blocks} - $fs{bfree};
-	#### There is a reserved amount for the su
-        if($fs{bfree} != $fs{bavail}) {
-                $fs{user_blocks} = $fs{blocks} - ($fs{bfree} - $fs{bavail});
-                $fs{user_used} = $fs{user_blocks} - $fs{bavail};
+	$fs{used} = $fs{blocks} - $fs{bfree};
+	####There is a reserved amount for the su
+	if($fs{bfree} != $fs{bavail}) {
+		$fs{user_blocks} = $fs{blocks} - ($fs{bfree} - $fs{bavail});
+		$fs{user_used} = $fs{user_blocks} - $fs{bavail};
 		if($fs{bavail} < 0) {
-			#### Over 100%
+			#### over 100%
 			my $tmp_bavail = $fs{bavail};
 			$fs{per} = ($tmp_bavail *= -1) / $fs{user_blocks};
 		}
 	
 		else {
-                	$fs{per} = $fs{user_used} / $fs{user_blocks};
+			$fs{per} = $fs{user_used} / $fs{user_blocks};
 		}
-        }
+	}
 	
-	#### su and user amount are the same
-        else {
-                $fs{per} = $fs{used} / $fs{blocks};
+	####su and user amount are the same
+	else {
+		$fs{per} = $fs{used} / $fs{blocks};
 		$fs{user_blocks} = $fs{blocks};
 		$fs{user_used} = $fs{used};
-        }
+	}
 
-	#### Round 
-	#### Some df apps round differently some dont
-        $fs{per} *= 100;
-        $fs{per} += .5;
+	#### round 
+	$fs{per} *= 100;
+	$fs{per} += .5;
 
 	#### over 100%
 	($fs{bavail} < 0) &&
 		($fs{per} += 100);
 
-        $fs{per}=int($fs{per});
+	$fs{per} = int($fs{per});
 
 	#### Inodes
-        $fs{fused} = $fs{files} - $fs{ffree};
+	$fs{fused} = $fs{files} - $fs{ffree};
 
 	if($fs{files} >= 0) {	
-	 	#### There is a reserved amount for the su
-        	if($fs{ffree} != $fs{favail}) {
-                	$fs{user_files} = $fs{files} - ($fs{ffree} - $fs{favail});
-                	$fs{user_fused} = $fs{user_files} - $fs{favail};
+		####There is a reserved amount for the su
+		if($fs{ffree} != $fs{favail}) {
+			$fs{user_files} = $fs{files} - ($fs{ffree} - $fs{favail});
+			$fs{user_fused} = $fs{user_files} - $fs{favail};
 			if($fs{favail} < 0)  {
-				#### Over 100%
+				#### over 100%
 				my $tmp_favail = $fs{favail};
-                		$fs{fper} = ($tmp_favail *= -1) / $fs{user_files};
+				$fs{fper} = ($tmp_favail *= -1) / $fs{user_files};
 			}
 
 			else {
-               			$fs{fper} = $fs{user_fused} / $fs{user_files};
+				$fs{fper} = $fs{user_fused} / $fs{user_files};
 			}
 		}
 
-        	#### su and user amount are the same
+		####su and user amount are the same
 		else {
-                	$fs{fper} = $fs{fused} / $fs{files};
+			$fs{fper} = $fs{fused}/$fs{files};
 			$fs{user_files} = $fs{files};
 			$fs{user_fused} = $fs{fused};
 		}
 
-		#### Round 
-		#### Some df apps round differently some dont.
-        	$fs{fper} *= 100;
-        	$fs{fper} += .5;
+		#### round 
+		$fs{fper} *= 100;
+		$fs{fper} += .5;
 
-		#### Over 100%
+		#### over 100%
 		($fs{favail} < 0) &&
 			($fs{fper} += 100);
-        }
+	}
 
-	#### Probably an NFS mount no inode info
+	####Probably an NFS mount no inode info
 	else {
-		$fs{fper} = -1;
-		$fs{fused} = -1;
+		$fs{fper}       = -1;
+		$fs{fused}      = -1;
 		$fs{user_fused} = -1;
 		$fs{user_files} = -1;
 	}
 
-        $fs{fper} = int($fs{fper});
-        return(\%fs);
+	$fs{fper} = int($fs{fper});
+	return(\%fs);
 }
 
 1;
@@ -150,13 +147,13 @@ Filesys::Df - Perl extension for obtaining file system stats.
 
 
   use Filesys::Df;
-  $ref = df("/tmp", 512); # Display output in 512k blocks default is 1024k
-  print "Percent Full:               $ref->{per}\n";
-  print "Superuser Blocks:           $ref->{blocks}\n";
-  print "Superuser Blocks Available: $ref->{bfree}\n";
-  print "User Blocks:                $ref->{user_blocks}\n";
-  print "User Blocks Available:      $ref->{bavail}\n";
-  print "Blocks Used:                $ref->{used}\n";
+  $ref=df("/tmp", 512); #Display output in 512k blocks
+  print"Percent Full: $ref->{per}\n";
+  print"Superuser Blocks: $ref->{blocks}\n";
+  print"Superuser Blocks Available: $ref->{bfree}\n";
+  print"User Blocks: $ref->{user_blocks}\n";
+  print"User Blocks Available: $ref->{bavail}\n";
+  print"Blocks Used: $ref->{used}\n";
 
 
 =head1 DESCRIPTION
@@ -250,6 +247,12 @@ and $! will have been set.
 Requirements:
 Your system must contain statvfs(). 
 You must be running perl.5003 or higher.
+
+Note:
+The way the percent full is measured is based on what the
+HP-UX application 'bdf' returns.  The 'bdf' application 
+seems to round a bit different than 'df' does but I like
+'bdf' so that is what I based the percentages on.
 
 =head1 AUTHOR
 
