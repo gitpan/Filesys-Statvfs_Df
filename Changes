@@ -73,3 +73,6 @@ Revision history for Perl extension Filesys::Statvfs Filesys::Df
         - Assumed that for NFS filesystems the inode value would be -1.
           Looks like RH 6.2 returns 0 instead. Fixed problem that would
           cause the module to abort on NFS filesystems for RH.
+
+0.67 Fri Nov 24 2000 
+	- Fixed some documentation errors. No code changes.

@@ -9,8 +9,12 @@ Filesys::Df uses Filesys::Statvfs to obtain
 filesystem statistics then creates additional
 filesystem information such as percent full,
 user and superuser differentials, etc.
+
 Filesys::Df will also let you specify the
 block size for the values you wish to see.
+The default block size output is 1024 bytes per
+block. So if you want to get the size in bytes
+just take the block size and * it by 1024.
 
 SYNOPSIS Filesys::Statvfs
 
@@ -18,14 +22,17 @@ use Filesys::Statvfs;
 
 	my($bsize, $frsize, $blocks, $bfree, $bavail,
         $files, $ffree, $favail, $fsid, $basetype, $flag,
-        $namemax, $fstr)=statvfs("/tmp");
+        $namemax, $fstr) = statvfs("/tmp");
 
 
 SYNOPSIS Filesys::Df
 
 use Filesys::Df;
 
-	my $ref=df("/tmp", 1024);  #1024 block size output
+	my $ref = df("/tmp");  # Default block size of 1024 bytes.
+	                       # You can specify a different block
+                               # as a second argument.
+
 	print"Percent Full:       $ref->{per}\n";
 	print"Total Blocks:       $ref->{blocks}\n";
 	print"Blocks Available:   $ref->{bavail}\n";
@@ -33,6 +40,8 @@ use Filesys::Df;
 	print"Inode Percent full: $ref->{fper}\n";
 	print"Inodes Free:        $ref->{favail}\n";
 	print"Inodes Used:        $ref->{fused}\n";
+
+	print"Total Bytes", ($ref->{blocks} * 1024), "\n";
 
 	#These are just some of the keys that are available.
 	#See the documentation for the others.
@@ -48,8 +57,8 @@ TO INSTALL RUN:
 	make install
 
 For this module to install and work properly you will need
-to have statvfs() on your system. A good way to tell if
-you have it is to look for the sys/statvfs.h header
+to have the statvfs() system call on your system. A good way
+to tell if you have it is to look for the sys/statvfs.h header
 in your include directory. (Usually /usr/include/)
 
 If there is an error during the 'make', it is

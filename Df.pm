@@ -10,7 +10,7 @@ require Exporter;
 
 @ISA = qw(Exporter);
 @EXPORT = qw(df);
-$VERSION = '0.65';
+$VERSION = '0.67';
 
 sub df {
 my ($dir, $block_size) = @_;
@@ -29,7 +29,7 @@ my %fs;
 
 	($bsize, $frsize, $fs{blocks}, $fs{bfree},
 	 $fs{bavail}, $fs{files}, $fs{ffree},
-	 $fs{favail})=statvfs($dir);
+	 $fs{favail}) = statvfs($dir);
 
 	(defined($fs{blocks})) ||
 			(return());
@@ -151,13 +151,14 @@ Filesys::Df - Perl extension for obtaining file system stats.
 
 
   use Filesys::Df;
-  $ref=df("/tmp", 512); #Display output in 512k blocks
-  print"Percent Full: $ref->{per}\n";
-  print"Superuser Blocks: $ref->{blocks}\n";
+  $ref = df("/tmp", 512); #Display output in 512 byte blocks
+                          #Default is 1024 byte blocks.
+  print"Percent Full:               $ref->{per}\n";
+  print"Superuser Blocks:           $ref->{blocks}\n";
   print"Superuser Blocks Available: $ref->{bfree}\n";
-  print"User Blocks: $ref->{user_blocks}\n";
-  print"User Blocks Available: $ref->{bavail}\n";
-  print"Blocks Used: $ref->{used}\n";
+  print"User Blocks:                $ref->{user_blocks}\n";
+  print"User Blocks Available:      $ref->{bavail}\n";
+  print"Blocks Used:                $ref->{used}\n";
 
 
 =head1 DESCRIPTION

@@ -8,7 +8,7 @@ require DynaLoader;
 
 @ISA = qw(Exporter DynaLoader);
 @EXPORT = qw(statvfs);
-$VERSION = '0.65';
+$VERSION = '0.67';
 bootstrap Filesys::Statvfs $VERSION;
 
 1;
@@ -24,13 +24,13 @@ Filesys::Statvfs - Perl extension for statvfs().
 
 	my($bsize, $frsize, $blocks, $bfree, $bavail,
 	$files, $ffree, $favail, $fsid, $basetype, $flag,
-	$namemax, $fstr)=statvfs("/tmp");
+	$namemax, $fstr) = statvfs("/tmp");
 
 	##### On HP-UX 10x systems f_time and f_size are avaliable
 
 	($bsize, $frsize, $blocks, $bfree, $bavail,
 	$files, $ffree, $favail, $fsid, $basetype, $flag,
-	$namemax, $fstr, $size, $time)=statvfs("/tmp");
+	$namemax, $fstr, $size, $time) = statvfs("/tmp");
 
 
 

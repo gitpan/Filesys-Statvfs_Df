@@ -41,7 +41,7 @@ print"basetype=$basetype flag=$flag namemax=$namemax\n";
 print"fstr=$fstr\n\n";
 
 
-print"The df() call was successful.  Results of df() call for \"$dir\" in 1024k blocks\n";
+print"The df() call was successful. Results of df() call for \"$dir\" in 1024 byte blocks\n";
 print"Percent Full $a_ref->{per}%\n";
 print"Total Blocks $a_ref->{blocks}\n";
 print"Total Blocks Used $a_ref->{used}\n";
