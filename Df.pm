@@ -10,7 +10,7 @@ require Exporter;
 
 @ISA = qw(Exporter);
 @EXPORT = qw(df);
-$VERSION = '0.55';
+$VERSION = '0.58';
 
 sub df {
 my ($dir, $block_size) = @_;
@@ -128,10 +128,10 @@ my %fs;
 
 	#### Probably an NFS mount no inode info
 	else {
-		$fs{fper} =- 1;
-		$fs{fused} =- 1;
-		$fs{user_fused} =- 1;
-		$fs{user_files} =- 1;
+		$fs{fper} = -1;
+		$fs{fused} = -1;
+		$fs{user_fused} = -1;
+		$fs{user_files} = -1;
 	}
 
         $fs{fper} = int($fs{fper});
@@ -150,7 +150,7 @@ Filesys::Df - Perl extension for obtaining file system stats.
 
 
   use Filesys::Df;
-  $ref=df("/tmp", 512); # Display output in 512k blocks default is 1024k
+  $ref = df("/tmp", 512); # Display output in 512k blocks default is 1024k
   print "Percent Full:               $ref->{per}\n";
   print "Superuser Blocks:           $ref->{blocks}\n";
   print "Superuser Blocks Available: $ref->{bfree}\n";
@@ -250,12 +250,6 @@ and $! will have been set.
 Requirements:
 Your system must contain statvfs(). 
 You must be running perl.5003 or higher.
-
-Note:
-The way the percent full is measured is based on what the
-HP-UX application 'bdf' returns.  The 'bdf' application 
-seems to round a bit different than 'df' does but I like
-'bdf' so that is what I based the percentages on.
 
 =head1 AUTHOR
 

@@ -54,3 +54,7 @@ Revision history for Perl extension Filesys::Statvfs Filesys::Df
 
 0.55 Fri Mar 19 1999
 	- Documentation formatting.
+
+0.57 Mon Apr 26 1999
+	- Changed typo in NFS inode code
+	  now runs clean with -w option.
