@@ -32,15 +32,21 @@ statvfs(dir)
 		PUSHs(sv_2mortal(newSViv(st_ptr->f_files)));
 		PUSHs(sv_2mortal(newSViv(st_ptr->f_ffree)));
 		PUSHs(sv_2mortal(newSViv(st_ptr->f_favail)));
-#ifndef _LINUX__
+#if defined(_AIX__) || defined(_LINUX__)
+		PUSHs(sv_2mortal(newSViv(0)));
+#else
 		PUSHs(sv_2mortal(newSViv(st_ptr->f_fsid)));
 #endif
-#ifndef _LINUX__
+#ifdef _LINUX__
+		PUSHs(sv_2mortal(newSVpv(NULL, 1)));
+#else
 		PUSHs(sv_2mortal(newSVpv(st_ptr->f_basetype, 0)));
 #endif
 		PUSHs(sv_2mortal(newSViv(st_ptr->f_flag)));
 		PUSHs(sv_2mortal(newSViv(st_ptr->f_namemax)));
-#if !defined(_DEC__) && !defined(_LINUX__)
+#if defined(_DEC__) || defined(_LINUX__)
+		PUSHs(sv_2mortal(newSVpv(NULL, 1)));
+#else
 		PUSHs(sv_2mortal(newSVpv(st_ptr->f_fstr, 0)));
 #endif
 #ifdef _HPUX__

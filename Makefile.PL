@@ -12,6 +12,9 @@ open(CONFIG, ">config.h") or die "$! config.h";
 ($Config{osname} eq "linux") &&
         (print CONFIG "#define _LINUX__\n");
 
+($Config{osname} eq "aix") &&
+        (print CONFIG "#define _AIX__\n");
+
 close(CONFIG);
 
 WriteMakefile(

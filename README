@@ -26,13 +26,13 @@ SYNOPSIS Filesys::Df
 use Filesys::Df;
 
 	my $ref=df("/tmp", 1024);  #1024 block size output
-	print"Percent Full: $ref->{per}\n";
-	print"Total Blocks: $ref->{blocks}\n";
-	print"Blocks Available: $ref->{bavail}\n";
-	print"Blocks Used: $ref->{used}\n";
+	print"Percent Full:       $ref->{per}\n";
+	print"Total Blocks:       $ref->{blocks}\n";
+	print"Blocks Available:   $ref->{bavail}\n";
+	print"Blocks Used:        $ref->{used}\n";
 	print"Inode Percent full: $ref->{fper}\n";
-	print"Inodes Free: $ref->{favail}\n";
-	print"Inodes Used: $ref->{fused}\n";
+	print"Inodes Free:        $ref->{favail}\n";
+	print"Inodes Used:        $ref->{fused}\n";
 
 	#These are just some of the keys that are available.
 	#See the documentation for the others.
@@ -74,7 +74,17 @@ on the OS type. For instance HP-UX 10x has two extra non standard
 fields in their statvfs structure. 
 
 This has been tested successfully on HP-UX 10x, IRIX 6.3,
-Solaris 2.6, RH Linux 6.5, and some Digital Unix.
+Solaris 2.6, RH Linux 6.5, AIX 4.3 and some Digital Unix.
+
+NOTE: the fsid field on Linux and AIX will be zeroed. It will
+be like this until I have time to add support for their fsid type.
+I doubt anyone out there will use the fsid field anyway. :-P
+
+Also please note that if the paticualr OS you are using does not
+support some of the values returned by Statvfs::statvfs() they
+will be zeroed or NULLed depending on whether they are integers
+or string values.
+
 
 If you have any problems or questions please email
 me at IGuthrie@aol.com with "Filesys Module" in
