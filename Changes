@@ -17,5 +17,7 @@ Revision history for Perl extension Filesys::Statvfs Filesys::Df
 	  it is still acessable.
 	- Updated documnetation.
 
-0.45 Thu Aug 07 1998
-	- Only documentation change
+0.46 Thu Aug 07 1998
+	- Changed module layout. No more Filesys dir.
+	  This fixed a bug with installs.
+	- Changed documentation.

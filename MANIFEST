@@ -1,9 +1,8 @@
-Statvfs.xs
-Makefile.PL
-test.pl
 Changes
 MANIFEST
-Filesys/Statvfs.pm
-Filesys/Df.pm
-README
+Makefile.PL
+Statvfs.pm
+Df.pm
+Statvfs.xs
+test.pl
 typemap
