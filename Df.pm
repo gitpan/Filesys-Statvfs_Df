@@ -10,14 +10,14 @@ require Exporter;
 
 @ISA = qw(Exporter);
 @EXPORT = qw(df);
-$VERSION = '0.50';
+$VERSION = '0.51';
 
 sub df {
 my ($dir, $block_size)=@_;
 my ($per, $user_used, $user_blocks);
-my ($fper, $user_fused, $user_files);
-my $h_ref={};
+my ($fper, $user_fused, $user_files, $used);
 my $result=0;
+my $h_ref={};
 
 	($dir) ||
 		(croak "Usage: df\(\$dir\) or df\(\$dir\, \$block_size)");
@@ -25,39 +25,40 @@ my $result=0;
 	(-d $dir) ||
 		(return());
 
-	$block_size=1024 unless($block_size); 
+	($block_size) ||
+		($block_size=1024);
 
         my ($bsize, $frsize, $blocks, $bfree,
         $bavail, $files, $ffree, $favail)=statvfs($dir);
 
-	return if(! defined($blocks));
+	(! defined($blocks)) &&
+			(return());
 
 	####Return info in 1k blocks or specified size
         if($block_size > $frsize) {
                 $result=$block_size/$frsize;
-                $blocks=$blocks/$result;
-                $bfree=$bfree/$result;
-                $bavail=$bavail/$result;
+                $blocks/=$result;
+                $bfree/=$result;
+                $bavail/=$result;
         }
 
         elsif($block_size < $frsize) {
                 $result=$frsize/$block_size;
-                $blocks=$blocks*$result;
-                $bfree=$bfree*$result;
-                $bavail=$bavail*$result;
+                $blocks*=$result;
+                $bfree*=$result;
+                $bavail*=$result;
         }
 
-        my $used=$blocks-$bfree;
+        $used=$blocks-$bfree;
 	####There is a reserved amount for the su
         if($bfree != $bavail) {
-                my $diff=$bfree-$bavail;
-                $user_blocks=$blocks-$diff;
+                $user_blocks=$blocks-($bfree-$bavail);
                 $user_used=$user_blocks-$bavail;
 		if($bavail >= 0) {
                 	$per=$user_used/$user_blocks;
 		}
 
-		####over 100%
+		#### over 100%
 		else {
 			my $tmp_bavail=$bavail;
 			$tmp_bavail*=-1; 
@@ -77,21 +78,21 @@ my $result=0;
         $per+=.5;
 
 	#### over 100%
-	$per+=100 if($bfree != $bavail && $bavail < 0);
+	($bfree != $bavail && $bavail < 0) &&
+		($per+=100);
 
 	#### Inodes
         my $fused=$files-$ffree;
 	if($files >= 0) {	
 	 	####There is a reserved amount for the su
         	if($ffree != $favail) {
-                	my $diff=$ffree-$favail;
-                	$user_files=$files-$diff;
+                	$user_files=$files-($ffree-$favail);
                 	$user_fused=$user_files-$favail;
 			if($favail >= 0) {
                			$fper=$user_fused/$user_files;
 			}
 
-			## Over 100%
+			#### over 100%
 			else {
                 		my $tmp_favail=$favail;
                 		$tmp_favail*=-1;
@@ -111,7 +112,8 @@ my $result=0;
         	$fper+=.5;
 
 		#### over 100%
-		$fper+=100 if($ffree != $favail && $favail < 0);
+		($ffree != $favail && $favail < 0) &&
+			($fper+=100);
         }
 
 	####Probably an NFS mount no inode info
