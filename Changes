@@ -34,3 +34,6 @@ Revision history for Perl extension Filesys::Statvfs Filesys::Df
 	
 	-Changed Statvfs.xs to return extra values 
 	 if defined by the OS.
+
+0.52 Wed Nov 04 1998
+	-Shortened the code in Df.pm 

@@ -10,14 +10,13 @@ require Exporter;
 
 @ISA = qw(Exporter);
 @EXPORT = qw(df);
-$VERSION = '0.51';
+$VERSION = '0.52';
 
 sub df {
 my ($dir, $block_size)=@_;
-my ($per, $user_used, $user_blocks);
-my ($fper, $user_fused, $user_files, $used);
+my ($bsize, $frsize);
 my $result=0;
-my $h_ref={};
+my %fs;
 
 	($dir) ||
 		(croak "Usage: df\(\$dir\) or df\(\$dir\, \$block_size)");
@@ -28,126 +27,95 @@ my $h_ref={};
 	($block_size) ||
 		($block_size=1024);
 
-        my ($bsize, $frsize, $blocks, $bfree,
-        $bavail, $files, $ffree, $favail)=statvfs($dir);
+       ($bsize, $frsize, $fs{blocks}, $fs{bfree},
+        $fs{bavail}, $fs{files}, $fs{ffree},
+	$fs{favail})=statvfs($dir);
 
-	(! defined($blocks)) &&
+	(defined($fs{blocks})) ||
 			(return());
 
 	####Return info in 1k blocks or specified size
         if($block_size > $frsize) {
                 $result=$block_size/$frsize;
-                $blocks/=$result;
-                $bfree/=$result;
-                $bavail/=$result;
+                $fs{blocks}/=$result;
+                $fs{bfree}/=$result;
+                $fs{bavail}/=$result;
         }
 
         elsif($block_size < $frsize) {
                 $result=$frsize/$block_size;
-                $blocks*=$result;
-                $bfree*=$result;
-                $bavail*=$result;
+                $fs{blocks}*=$result;
+                $fs{bfree}*=$result;
+                $fs{bavail}*=$result;
         }
 
-        $used=$blocks-$bfree;
+        $fs{used}=$fs{blocks}-$fs{bfree};
 	####There is a reserved amount for the su
-        if($bfree != $bavail) {
-                $user_blocks=$blocks-($bfree-$bavail);
-                $user_used=$user_blocks-$bavail;
-		if($bavail >= 0) {
-                	$per=$user_used/$user_blocks;
-		}
-
-		#### over 100%
-		else {
-			my $tmp_bavail=$bavail;
-			$tmp_bavail*=-1; 
-                	$per=$tmp_bavail/$user_blocks;
-		}
+        if($fs{bfree} != $fs{bavail}) {
+                $fs{user_blocks}=$fs{blocks}-($fs{bfree}-$fs{bavail});
+                $fs{user_used}=$fs{user_blocks}-$fs{bavail};
+		($fs{bavail} >= 0) &&
+                	($fs{per}=$fs{user_used}/$fs{user_blocks}) ||
+			($fs{per}=($fs{bavail}*=-1)/$fs{user_blocks});
+			#### over 100%
         }
 	
 	####su and user amount are the same
         else {
-                $per=$used/$blocks;
-		$user_blocks=$blocks;
-		$user_used=$used;
+                $fs{per}=$fs{used}/$fs{blocks};
+		$fs{user_blocks}=$fs{blocks};
+		$fs{user_used}=$fs{used};
         }
 
 	#### round 
-        $per*=100;
-        $per+=.5;
+        $fs{per}*=100;
+        $fs{per}+=.5;
 
 	#### over 100%
-	($bfree != $bavail && $bavail < 0) &&
-		($per+=100);
+	($fs{bfree} != $fs{bavail} && $fs{bavail} < 0) &&
+		($fs{per}+=100);
+
+        $fs{per}=~s/^(\d+).+$/$1/;
 
 	#### Inodes
-        my $fused=$files-$ffree;
-	if($files >= 0) {	
-	 	####There is a reserved amount for the su
-        	if($ffree != $favail) {
-                	$user_files=$files-($ffree-$favail);
-                	$user_fused=$user_files-$favail;
-			if($favail >= 0) {
-               			$fper=$user_fused/$user_files;
-			}
+        $fs{fused}=$fs{files}-$fs{ffree};
 
-			#### over 100%
-			else {
-                		my $tmp_favail=$favail;
-                		$tmp_favail*=-1;
-                		$fper=$tmp_favail/$user_files;
-			}
+	if($fs{files} >= 0) {	
+	 	####There is a reserved amount for the su
+        	if($fs{ffree} != $fs{favail}) {
+                	$fs{user_files}=$fs{files}-($fs{ffree}-$fs{favail});
+                	$fs{user_fused}=$fs{user_files}-$fs{favail};
+			($fs{favail} >= 0) &&
+               			($fs{fper}=$fs{user_fused}/$fs{user_files}) ||
+                		($fs{fper}=($fs{favail}*=-1)/$fs{user_files});
+				#### over 100%
 		}
 
         	####su and user amount are the same
 		else {
-                	$fper=$fused/$files;
-			$user_files=$files;
-			$user_fused=$fused;
+                	$fs{fper}=$fs{fused}/$fs{files};
+			$fs{user_files}=$fs{files};
+			$fs{user_fused}=$fs{fused};
 		}
 
 		#### round 
-        	$fper*=100;
-        	$fper+=.5;
+        	$fs{fper}*=100;
+        	$fs{fper}+=.5;
 
 		#### over 100%
-		($ffree != $favail && $favail < 0) &&
-			($fper+=100);
+		($fs{ffree} != $fs{favail} && $fs{favail} < 0) &&
+			($fs{fper}+=100);
         }
 
 	####Probably an NFS mount no inode info
 	else {
-		$fper=-1;
-		$fused=-1;
-		$user_fused=-1;
-		$user_files=-1;
+		$fs{fused}=-1;
+		$fs{user_fused}=-1;
+		$fs{user_files}=-1;
 	}
 
-        ($h_ref->{per})=($per=~/^(\d+)\./);
-        $h_ref->{su_blocks}=$blocks;
-        $h_ref->{su_bavail}=$bfree;
-        $h_ref->{su_used}=$used;
-        $h_ref->{user_blocks}=$user_blocks;
-        $h_ref->{user_used}=$user_used;
-        $h_ref->{user_bavail}=$bavail;
-        $h_ref->{blocks}=$blocks;
-        $h_ref->{bavail}=$bavail;
-        $h_ref->{bfree}=$bfree;
-        $h_ref->{used}=$used;
-
-        ($h_ref->{fper})=($fper=~/^(\d+)\./);
-        $h_ref->{su_files}=$files;
-        $h_ref->{su_favail}=$ffree;
-        $h_ref->{su_fused}=$fused;
-        $h_ref->{user_files}=$user_files;
-        $h_ref->{user_favail}=$favail;
-        $h_ref->{user_fused}=$user_fused;
-        $h_ref->{files}=$files;
-        $h_ref->{ffree}=$ffree;
-        $h_ref->{favail}=$favail;
-        $h_ref->{fused}=$fused;
-        return($h_ref);
+        $fs{fper}=~s/^(\d+).+$/$1/;
+        return(\%fs);
 }
 
 1;
