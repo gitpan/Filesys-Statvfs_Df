@@ -16,26 +16,26 @@ SYNOPSIS Filesys::Statvfs
 
 use Filesys::Statvfs;
 
-	my($bsize, $frsize, $blocks, $bfree, $bavail,
-        $files, $ffree, $favail, $fsid, $basetype, $flag,
-        $namemax, $fstr)=statvfs("/tmp");
+     my($bsize, $frsize, $blocks, $bfree, $bavail, $files,
+        $ffree, $favail, $fsid, $basetype, $flag, $namemax,
+        $fstr) = statvfs("/tmp");
 
 
 SYNOPSIS Filesys::Df
 
 use Filesys::Df;
 
-	my $ref=df("/tmp", 1024);  #1024 block size output
-	print"Percent Full: $ref->{per}\n";
-	print"Total Blocks: $ref->{blocks}\n";
-	print"Blocks Available: $ref->{bavail}\n";
-	print"Blocks Used: $ref->{used}\n";
-	print"Inode Percent full: $ref->{fper}\n";
-	print"Inodes Free: $ref->{favail}\n";
-	print"Inodes Used: $ref->{fused}\n";
+	my $ref=df("/tmp", 1024);  # 1024 block size output
+	print "Percent Full:       $ref->{per}\n";
+	print "Total Blocks:       $ref->{blocks}\n";
+	print "Blocks Available:   $ref->{bavail}\n";
+	print "Blocks Used:        $ref->{used}\n";
+	print "Inode Percent full: $ref->{fper}\n";
+	print "Inodes Free:        $ref->{favail}\n";
+	print "Inodes Used:        $ref->{fused}\n";
 
-	#These are just some of the keys that are available.
-	#See the documentation for the others.
+	# These are just some of the keys that are available.
+	# See the documentation for the others.
 
 
 
