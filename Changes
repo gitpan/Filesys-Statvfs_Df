@@ -16,3 +16,6 @@ Revision history for Perl extension Filesys::Statvfs Filesys::Df
 	- Removed user_used key from documentation although
 	  it is still acessable.
 	- Updated documnetation.
+
+0.45 Thu Aug 07 1998
+	- Only documentation change

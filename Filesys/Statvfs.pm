@@ -8,7 +8,7 @@ require DynaLoader;
 
 @ISA = qw(Exporter DynaLoader);
 @EXPORT = qw(statvfs);
-$VERSION = '0.44';
+$VERSION = '0.45';
 bootstrap Filesys::Statvfs $VERSION;
 
 1;
@@ -35,7 +35,8 @@ The statvfs() function will return a list
 of values or will return undef and 
 set $! if there was an error.
 
-The values returned are described in the statvfs header. 
+The values returned are described in the statvfs header or
+the statvfs() man page.
 
 Note:
 On Digital Unix $fstr maybe NULL.
