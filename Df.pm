@@ -10,7 +10,7 @@ require Exporter;
 
 @ISA = qw(Exporter);
 @EXPORT = qw(df);
-$VERSION = '0.61';
+$VERSION = '0.62';
 
 sub df {
 my ($dir, $block_size) = @_;
@@ -29,7 +29,7 @@ my %fs;
 
 	($bsize, $frsize, $fs{blocks}, $fs{bfree},
 	 $fs{bavail}, $fs{files}, $fs{ffree},
-	 $fs{favail})=statvfs($dir);
+	 $fs{favail}) = statvfs($dir);
 
 	(defined($fs{blocks})) ||
 			(return());

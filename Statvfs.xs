@@ -17,6 +17,7 @@ MODULE = Filesys::Statvfs	PACKAGE = Filesys::Statvfs
 void
 statvfs(dir)
 	char *dir
+	PROTOTYPE: $
 	PREINIT:
 	Statvfs st;
 	Statvfs *st_ptr;
@@ -38,14 +39,14 @@ statvfs(dir)
 		PUSHs(sv_2mortal(newSViv(st_ptr->f_fsid)));
 #endif
 #ifdef _LINUX__
-		PUSHs(sv_2mortal(newSVpv(NULL, 1)));
+		PUSHs(sv_2mortal(newSVpv(0, 0)));
 #else
 		PUSHs(sv_2mortal(newSVpv(st_ptr->f_basetype, 0)));
 #endif
 		PUSHs(sv_2mortal(newSViv(st_ptr->f_flag)));
 		PUSHs(sv_2mortal(newSViv(st_ptr->f_namemax)));
 #if defined(_DEC__) || defined(_LINUX__)
-		PUSHs(sv_2mortal(newSVpv(NULL, 1)));
+		PUSHs(sv_2mortal(newSVpv(NULL, 0)));
 #else
 		PUSHs(sv_2mortal(newSVpv(st_ptr->f_fstr, 0)));
 #endif
