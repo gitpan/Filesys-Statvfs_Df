@@ -10,7 +10,7 @@ require Exporter;
 
 @ISA = qw(Exporter);
 @EXPORT = qw(df);
-$VERSION = '0.67';
+$VERSION = '0.68';
 
 sub df {
 my ($dir, $block_size) = @_;
@@ -32,6 +32,11 @@ my %fs;
 	 $fs{favail}) = statvfs($dir);
 
 	(defined($fs{blocks})) ||
+			(return());
+
+	## If blocks is 0 then we cant return percentage and
+	## other useful info. (/proc etc)
+	($fs{blocks} == 0)  && 
 			(return());
 
 	####Return info in 1k blocks or specified size
@@ -248,6 +253,10 @@ values as the su_ keys.
 
 If there was an error df() will return undef 
 and $! will have been set.
+
+If the blocks field returned from statvfs() is 0
+then df() returns undef. This may occur if you
+stat a directory such as /proc.
 
 Requirements:
 Your system must contain statvfs(). 

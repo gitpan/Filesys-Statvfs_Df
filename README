@@ -77,11 +77,6 @@ may be NULL. The 'make test' will then proceed to test df().
 Once installed, run 'perldoc Filesys::Statvfs' and
 'perldoc Filesys::Df' for more information. 
 
-In the future I plan on having support for statfs().
-I also plan on having all of the fields available for statvfs() depending
-on the OS type. For instance HP-UX 10x has two extra non standard
-fields in their statvfs structure. 
-
 This has been tested successfully on HP-UX 10x, IRIX 6.3,
 Solaris 2.6, RH Linux 6.5, AIX 4.3 and some Digital Unix.
 

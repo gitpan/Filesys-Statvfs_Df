@@ -76,3 +76,8 @@ Revision history for Perl extension Filesys::Statvfs Filesys::Df
 
 0.67 Fri Nov 24 2000 
 	- Fixed some documentation errors. No code changes.
+
+0.68 Wed Jun 26 2002
+	- If the blocks field was zero a divde by 0 error would occur.
+	  This would occur if a filesystem such as /proc was stated.
+	  Df() now returns undef when this occurs.
