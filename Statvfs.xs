@@ -4,6 +4,7 @@ extern "C" {
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
+#include "config.h"
 #include<sys/statvfs.h>
 #ifdef __cplusplus
 }
@@ -35,11 +36,11 @@ statvfs(dir)
 		PUSHs(sv_2mortal(newSVpv(st_ptr->f_basetype, 0)));
 		PUSHs(sv_2mortal(newSViv(st_ptr->f_flag)));
 		PUSHs(sv_2mortal(newSViv(st_ptr->f_namemax)));
+#ifndef _DEC__
 		PUSHs(sv_2mortal(newSVpv(st_ptr->f_fstr, 0)));
-		/* HP-UX only 
-		if(strcmp(OSNAME, "hpux") == 0) {
-			PUSHs(sv_2mortal(newSViv(st_ptr->f_size))); 
-			PUSHs(sv_2mortal(newSViv(st_ptr->f_time)));
-		}
-		*/
+#endif
+#ifdef _HPUX__
+		PUSHs(sv_2mortal(newSViv(st_ptr->f_size))); 
+		PUSHs(sv_2mortal(newSViv(st_ptr->f_time)));
+#endif
 	}

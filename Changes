@@ -27,3 +27,10 @@ Revision history for Perl extension Filesys::Statvfs Filesys::Df
 
 0.49 Sat Sep 15 1998
 	- README Changes
+
+0.50 Sat Sep 28 1998
+	- Changed Makefile.PL so that it will
+          create a config.h
+	
+	-Changed Statvfs.xs to return extra values 
+	 if defined by the OS.

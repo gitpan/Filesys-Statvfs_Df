@@ -10,7 +10,7 @@ require Exporter;
 
 @ISA = qw(Exporter);
 @EXPORT = qw(df);
-$VERSION = '0.49';
+$VERSION = '0.50';
 
 sub df {
 my ($dir, $block_size)=@_;
@@ -122,7 +122,7 @@ my $result=0;
 		$user_files=-1;
 	}
 
-        ($h_ref->{per})=($per=~/(\d+)\./);
+        ($h_ref->{per})=($per=~/^(\d+)\./);
         $h_ref->{su_blocks}=$blocks;
         $h_ref->{su_bavail}=$bfree;
         $h_ref->{su_used}=$used;
@@ -134,7 +134,7 @@ my $result=0;
         $h_ref->{bfree}=$bfree;
         $h_ref->{used}=$used;
 
-        ($h_ref->{fper})=($fper=~/(\d+)\./);
+        ($h_ref->{fper})=($fper=~/^(\d+)\./);
         $h_ref->{su_files}=$files;
         $h_ref->{su_favail}=$ffree;
         $h_ref->{su_fused}=$fused;
