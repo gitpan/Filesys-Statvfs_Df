@@ -54,13 +54,22 @@ Revision history for Perl extension Filesys::Statvfs Filesys::Df
 0.55 Sun Nov 28 1999
 	- Added support for Linux
 
-0.61 Tues Dec 14 1999
-	- I think I added support for AIX. :-)
+0.61 Fri Jan 7 2000 
+	- I added support for AIX. 
         - Fixed a bug where the statvfs data
           would be out of order when I started 
-          ifdefing stuff out of Statvfs.xs. So
-	  basically less data was pushed to the
-	  stack. Fixed this by pushing zeroed data.
+          ifdefing stuff out of Statvfs.xs.
+	  This would only occur to less used members
+	  of the statvfs struct like fsid. 
+	  The actual block and inode counts where
+	  unaffected so you would still get an
+	  accurate picture of the space on the
+	  filesystem. I fixed this by returning
+	  0 for integers and NULL for strings
+	  that are not used by the statvfs 
+	  structure.
 
-0.62 Tues Feb 5 2000
-	- Added a prototype in Statvfs.xs
+0.65 Wed Nov 22 2000 
+        - Assumed that for NFS filesystems the inode value would be -1.
+          Looks like RH 6.2 returns 0 instead. Fixed problem that would
+          cause the module to abort on NFS filesystems for RH.

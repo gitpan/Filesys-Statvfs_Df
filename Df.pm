@@ -10,7 +10,7 @@ require Exporter;
 
 @ISA = qw(Exporter);
 @EXPORT = qw(df);
-$VERSION = '0.62';
+$VERSION = '0.65';
 
 sub df {
 my ($dir, $block_size) = @_;
@@ -29,7 +29,7 @@ my %fs;
 
 	($bsize, $frsize, $fs{blocks}, $fs{bfree},
 	 $fs{bavail}, $fs{files}, $fs{ffree},
-	 $fs{favail}) = statvfs($dir);
+	 $fs{favail})=statvfs($dir);
 
 	(defined($fs{blocks})) ||
 			(return());
@@ -95,7 +95,7 @@ my %fs;
 	#### Inodes
 	$fs{fused} = $fs{files} - $fs{ffree};
 
-	if($fs{files} >= 0) {	
+	if($fs{files} > 0) {	
 		####There is a reserved amount for the su
 		if($fs{ffree} != $fs{favail}) {
 			$fs{user_files} = $fs{files} - ($fs{ffree} - $fs{favail});
